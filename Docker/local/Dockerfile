@@ -4,7 +4,7 @@ FROM python:3.12-slim AS builder
 WORKDIR /app
 COPY --from=uv /uv /usr/local/bin/uv
 COPY pyproject.toml uv.lock ./
-RUN uv export --frozen --no-dev --no-hashes -o requirements.txt
+RUN uv export --frozen --no-hashes -o requirements.txt
 
 FROM python:3.12-slim
 WORKDIR /app
