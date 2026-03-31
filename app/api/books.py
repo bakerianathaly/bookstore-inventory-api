@@ -23,7 +23,9 @@ async def crear_libro(
 ) -> APIResponse[Book]:
     try:
         book = await service.create.execute(data=data)
-        return APIResponse(success=True, message="El libro fue creado exitosamente", outcome=[book])
+        return APIResponse(
+            success=True, message="El libro fue creado exitosamente", outcome=[book]
+        )
     except BookAlreadyExistsException as e:
         response.status_code = status.HTTP_400_BAD_REQUEST
         return APIResponse(success=False, message=str(e), errors=[str(e)])

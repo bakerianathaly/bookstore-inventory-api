@@ -10,8 +10,10 @@ class GetBook:
 
     async def obtener(self, book_id: int) -> Book:
         book = await self.repository.get_by_id(book_id)
+        
         if book is None:
-            raise BookNotFoundException(f"Libro con ID {book_id} no encontrado")
+            raise BookNotFoundException(f"El libro con ID {book_id} no fue encontrado")
+            
         return book
 
     async def listar(self, page: int = 1, limit: int = 10) -> PaginationInfo:

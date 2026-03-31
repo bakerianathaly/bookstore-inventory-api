@@ -21,6 +21,7 @@ class ExchangeRateAPIException(Exception):
 
     pass
 
+
 class BookListEmptyException(Exception):
     """Listado de libros se encuentra vacio."""
 

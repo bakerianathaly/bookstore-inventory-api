@@ -22,7 +22,17 @@ class BookRepository:
             raise Exception(f"Error al crear libro: {e!s}") from e
 
     async def get_by_id(self, book_id: int) -> Optional[Book]:
-        statement = select(Book).where(Book.id == book_id)
+        statement = select(
+            Book.id,
+            Book.author,
+            Book.category,
+            Book.cost_usd,
+            Book.isbn,
+            Book.selling_price_local,
+            Book.stock_quantity,
+            Book.supplier_country,
+            Book.title,
+        ).where(Book.id == book_id)
         result = await self.db.exec(statement)
         return result.one_or_none()
 
@@ -30,7 +40,7 @@ class BookRepository:
         statement = select(Book).where(Book.isbn == isbn)
         result = await self.db.exec(statement)
         return result.one_or_none()
-        
+
     async def get_by_title(self, title: str) -> Optional[Book]:
         statement = select(Book).where(Book.title == title)
         result = await self.db.exec(statement)
@@ -44,12 +54,38 @@ class BookRepository:
         count_statement = select(func.count()).select_from(Book)
         count_result = await self.db.exec(count_statement)
         total_records = count_result.one_or_none()
-        
-        # Si no hay ningun libro en BD (la paginacion es 0) regreso el estatus 204 No Content (Sin Contenido)
-        if total_records == 0  or total_records is None:
-            raise BookListEmptyException('El listado de los libros se encuentra vacio')
 
-        query = select(Book).order_by(Book.title).offset(offset).limit(limit)
+        # Si no hay ningun libro en BD (la paginacion es 0) regreso el estatus 204 No Content (Sin Contenido)
+        if total_records == 0 or total_records is None:
+            raise BookListEmptyException("El listado de los libros se encuentra vacio")
+
+        query = (
+            select(
+                Book.id,
+                Book.author,
+                Book.category,
+                Book.cost_usd,
+                Book.isbn,
+                Book.selling_price_local,
+                Book.stock_quantity,
+                Book.supplier_country,
+                Book.title,
+            )
+            .order_by(Book.title)
+            .group_by(
+                Book.id,
+                Book.author,
+                Book.category,
+                Book.cost_usd,
+                Book.isbn,
+                Book.selling_price_local,
+                Book.stock_quantity,
+                Book.supplier_country,
+                Book.title,
+            )
+            .offset(offset)
+            .limit(limit)
+        )
         result = await self.db.exec(query)
         books = list(result.all())
         books = [dict(x._mapping) for x in books]
