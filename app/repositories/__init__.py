@@ -1,3 +1,3 @@
-from app.repositories.permissions_repository import PermissionsRepository
+from app.repositories.book_repository import BookRepository
 
-__all__ = ["PermissionsRepository"]
+__all__ = ["BookRepository"]

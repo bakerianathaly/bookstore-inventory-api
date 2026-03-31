@@ -1,3 +1,3 @@
-from app.api.permissions import router as permissions_router
+from app.api.books import router as books_router
 
-__all__ = ["permissions_router"]
+__all__ = ["books_router"]

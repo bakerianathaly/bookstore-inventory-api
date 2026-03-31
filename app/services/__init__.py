@@ -1,3 +1,3 @@
-from app.services.permissions import PermissionsUseCase
+from app.services.book import BookUseCase
 
-__all__ = ["PermissionsUseCase"]
+__all__ = ["BookUseCase"]

@@ -1,5 +1,5 @@
 services:
-    server-cronico:
+    server-bookstore-inventory:
         build:
             context: .
             dockerfile: Docker/local/Dockerfile
@@ -13,6 +13,8 @@ services:
         env_file:
             - .env
         restart: unless-stopped
+        depends_on:
+            - db
         dns:
             - 8.8.8.8
             - 8.8.4.4
@@ -25,6 +27,24 @@ services:
         networks:
             - testing-net
 
+    db:
+        image: postgres:16-alpine
+        container_name: postgres_db
+        restart: always
+        env_file:
+            - .env
+        environment:
+            POSTGRES_USER: ${MY_CUSTOM_USER}
+            POSTGRES_PASSWORD: ${MY_CUSTOM_PASS}
+            POSTGRES_DB: ${MY_CUSTOM_DB}
+        ports:
+            - "5432:5432"
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        networks:
+            - testing-net
+volumes:
+    postgres_data:
 networks:
     testing-net:
         driver: bridge

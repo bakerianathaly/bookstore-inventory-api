@@ -1,12 +1,13 @@
 from fastapi import FastAPI
 
-from app.api.permissions import router as permissions_router
+from app.api.books import router as books_router
+from shared.config import DESCRIPTION, PROJECT_NAME, VERSION
 
-app = FastAPI(title="Venecare CRM")
+app = FastAPI(title=PROJECT_NAME, description=DESCRIPTION, version=VERSION)
 
-app.include_router(permissions_router, prefix="/api/v1")
+app.include_router(books_router, prefix="/api/v1")
 
 
 @app.get("/")
 def read_root():
-    return {"message": "¡Proyecto FastAPI funcionando con Docker y Postgres!"}
+    return {"message": f"{PROJECT_NAME} API v{VERSION} funcionando"}

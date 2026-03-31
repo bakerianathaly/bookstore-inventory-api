@@ -2,17 +2,17 @@ from fastapi import Depends
 from sqlmodel import Session
 
 from app.db.sessions import get_db
-from app.repositories.permissions_repository import PermissionsRepository
-from app.services.permissions import PermissionsUseCase
+from app.repositories.book_repository import BookRepository
+from app.services.book import BookUseCase
 
 
-class PermissionsDeps:
+class BookDeps:
     @staticmethod
-    def get_repository(db: Session = Depends(get_db)) -> PermissionsRepository:
-        return PermissionsRepository(db)
+    def get_repository(db: Session = Depends(get_db)) -> BookRepository:
+        return BookRepository(db)
 
     @staticmethod
     def get_service(
-        repo: PermissionsRepository = Depends(get_repository),
-    ) -> PermissionsUseCase:
-        return PermissionsUseCase(repo)
+        repo: BookRepository = Depends(get_repository),
+    ) -> BookUseCase:
+        return BookUseCase(repo)

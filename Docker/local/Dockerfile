@@ -12,6 +12,15 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV TZ=America/Caracas
 ENV PATH="/app/.venv/bin:$PATH"
+
 COPY --from=builder /app/.venv /app/.venv
 COPY . .
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8020", "--reload"]
+
+COPY Docker/local/entrypoint.sh /entrypoint.sh
+COPY Docker/local/start.sh /start.sh
+RUN chmod +x /entrypoint.sh /start.sh
+
+EXPOSE 8020
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["/start.sh"]
