@@ -26,3 +26,8 @@ class BookListEmptyException(Exception):
     """Listado de libros se encuentra vacio."""
 
     pass
+    
+class ExchangeRateApiException(Exception):
+    """Excepcion para la busqueda de la api."""
+
+    pass
