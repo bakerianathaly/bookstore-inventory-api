@@ -51,15 +51,20 @@ async def listar_libros(
 
 @router.get("/search", response_model=APIResponse[PaginationInfo])
 async def buscar_por_categoria(
+    response: Response,
     category: str,
     page: int = 1,
     limit: int = 10,
     service: BookUseCase = Depends(BookDeps.get_service),
 ) -> APIResponse[PaginationInfo]:
-    result = await service.get.buscar_por_categoria(
-        category=category, page=page, limit=limit
-    )
-    return APIResponse(success=True, message="Búsqueda completada", outcome=[result])
+    try:
+        result = await service.get.buscar_por_categoria(
+            category=category, page=page, limit=limit
+        )
+        return APIResponse(success=True, message="Libros obtenidos", outcome=[result])
+    except BookListEmptyException as e:
+        response.status_code = status.HTTP_204_NO_CONTENT
+        return APIResponse(success=False, message=str(e), errors=[str(e)])
 
 
 @router.get("/low-stock", response_model=APIResponse[PaginationInfo])

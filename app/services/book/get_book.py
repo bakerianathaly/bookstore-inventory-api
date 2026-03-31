@@ -34,7 +34,7 @@ class GetBook:
         self, category: str, page: int = 1, limit: int = 10
     ) -> PaginationInfo:
         books, total_records = await self.repository.search_by_category(
-            category=category, page=page, limit=limit
+            category=category.strip().capitalize(), page=page, limit=limit
         )
         total_pages = (total_records + limit - 1) // limit if total_records > 0 else 0
 
@@ -43,7 +43,7 @@ class GetBook:
             limit=limit,
             total_pages=total_pages,
             total_records=total_records,
-            info=[self._to_dict(b) for b in books],
+            info=books,
         )
 
     async def bajo_stock(

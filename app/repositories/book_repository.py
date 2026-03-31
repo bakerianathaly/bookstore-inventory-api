@@ -84,7 +84,7 @@ class BookRepository:
 
     async def search_by_category(
         self, category: str, page: int = 1, limit: int = 10
-    ) -> Tuple[list[Book], int]:
+    ) -> Tuple[list[dict], int]:
         offset = (page - 1) * limit
 
         count_statement = (
@@ -94,16 +94,30 @@ class BookRepository:
         )
         count_result = await self.db.execute(count_statement)
         total_records = count_result.scalar_one()
+        
+        # Si no hay ningun libro en BD (la paginacion es 0) regreso el estatus 204 No Content (Sin Contenido)
+        if total_records == 0 or total_records is None:
+            raise BookListEmptyException("El listado de los libros se encuentra vacio")
 
         query = (
-            select(Book)
+            select(Book.id,
+                Book.author,
+                Book.category,
+                Book.cost_usd,
+                Book.isbn,
+                Book.selling_price_local,
+                Book.stock_quantity,
+                Book.supplier_country,
+                Book.title
+            )
             .where(Book.category.ilike(f"%{category}%"))
             .order_by(Book.title)
             .offset(offset)
             .limit(limit)
         )
         result = await self.db.execute(query)
-        books = list(result.scalars().all())
+        books = list(result.all())
+        books = [dict(x._mapping) for x in books]
 
         return books, total_records
 
