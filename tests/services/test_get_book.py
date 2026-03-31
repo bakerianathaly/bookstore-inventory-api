@@ -7,7 +7,7 @@ from app.services.book import BookUseCase
 class TestGetBook:
     @pytest.mark.asyncio
     async def test_obtener_libro_por_id(self, service: BookUseCase, book_data):
-        created = await service.create.execute(book_data)
+        created = await service.create.execute(data=book_data)
         found = await service.get.obtener(created.id)
 
         assert found.id == created.id
@@ -22,8 +22,8 @@ class TestGetBook:
     async def test_listar_libros_paginado(
         self, service: BookUseCase, book_data, book_data_2
     ):
-        await service.create.execute(book_data)
-        await service.create.execute(book_data_2)
+        await service.create.execute(data=book_data)
+        await service.create.execute(data=book_data_2)
 
         result = await service.get.listar(page=1, limit=10)
 
@@ -35,8 +35,8 @@ class TestGetBook:
     async def test_buscar_por_categoria(
         self, service: BookUseCase, book_data, book_data_2
     ):
-        await service.create.execute(book_data)
-        await service.create.execute(book_data_2)
+        await service.create.execute(data=book_data)
+        await service.create.execute(data=book_data_2)
 
         result = await service.get.buscar_por_categoria("Clásica")
 
@@ -47,8 +47,8 @@ class TestGetBook:
     async def test_libros_bajo_stock(
         self, service: BookUseCase, book_data, book_data_2
     ):
-        await service.create.execute(book_data)
-        await service.create.execute(book_data_2)
+        await service.create.execute(data=book_data)
+        await service.create.execute(data=book_data_2)
 
         result = await service.get.bajo_stock(threshold=10)
 

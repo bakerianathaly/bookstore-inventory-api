@@ -12,11 +12,11 @@ class TestCreateBook:
     async def test_crear_libro_exitoso(
         self, service: BookUseCase, book_data: BookCreate
     ):
-        book = await service.create.execute(book_data)
+        book = await service.create.execute(data=book_data)
 
         assert book.id is not None
-        assert book.title == book_data.title
-        assert book.author == book_data.author
+        assert book.title == book_data.title.capitalize()
+        assert book.author == book_data.author.capitalize()
         assert book.isbn == book_data.isbn
         assert book.cost_usd == book_data.cost_usd
 
@@ -24,10 +24,10 @@ class TestCreateBook:
     async def test_crear_libro_isbn_duplicado(
         self, service: BookUseCase, book_data: BookCreate
     ):
-        await service.create.execute(book_data)
+        await service.create.execute(data=book_data)
 
         with pytest.raises(BookAlreadyExistsException) as exc:
-            await service.create.execute(book_data)
+            await service.create.execute(data=book_data)
 
         assert "ISBN" in str(exc.value)
 
@@ -44,7 +44,7 @@ class TestCreateBook:
         )
 
         with pytest.raises(ValidationException) as exc:
-            await service.create.execute(data)
+            await service.create.execute(data=data)
 
         assert "USD" in str(exc.value)
 
@@ -61,7 +61,7 @@ class TestCreateBook:
         )
 
         with pytest.raises(ValidationException) as exc:
-            await service.create.execute(data)
+            await service.create.execute(data=data)
 
         assert "stock" in str(exc.value).lower()
 
@@ -78,6 +78,6 @@ class TestCreateBook:
         )
 
         with pytest.raises(ValidationException) as exc:
-            await service.create.execute(data)
+            await service.create.execute(data=data)
 
         assert "ISBN" in str(exc.value)

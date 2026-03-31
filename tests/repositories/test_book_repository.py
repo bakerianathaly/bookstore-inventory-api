@@ -122,7 +122,7 @@ class TestBookRepository:
 
         books, total = await repo.get_low_stock(threshold=10)
         assert total == 1
-        assert books[0].title == "Low Stock"
+        assert books[0]["title"] == "Low Stock"
 
     @pytest.mark.asyncio
     async def test_delete_book(self, repo: BookRepository, sample_book: Book):

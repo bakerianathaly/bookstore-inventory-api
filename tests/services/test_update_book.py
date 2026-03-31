@@ -10,7 +10,7 @@ from app.services.book import BookUseCase
 class TestUpdateBook:
     @pytest.mark.asyncio
     async def test_actualizar_titulo(self, service: BookUseCase, book_data):
-        created = await service.create.execute(book_data)
+        created = await service.create.execute(data=book_data)
         data = BookUpdate(title="Nuevo Título")
 
         updated = await service.update.execute(created.id, data)
@@ -20,7 +20,7 @@ class TestUpdateBook:
 
     @pytest.mark.asyncio
     async def test_actualizar_precio(self, service: BookUseCase, book_data):
-        created = await service.create.execute(book_data)
+        created = await service.create.execute(data=book_data)
         data = BookUpdate(cost_usd=Decimal("25.00"))
 
         updated = await service.update.execute(created.id, data)
@@ -36,7 +36,7 @@ class TestUpdateBook:
 
     @pytest.mark.asyncio
     async def test_actualizar_precio_negativo(self, service: BookUseCase, book_data):
-        created = await service.create.execute(book_data)
+        created = await service.create.execute(data=book_data)
         data = BookUpdate(cost_usd=Decimal("-10.00"))
 
         with pytest.raises(ValidationException):
@@ -44,7 +44,7 @@ class TestUpdateBook:
 
     @pytest.mark.asyncio
     async def test_actualizar_stock_negativo(self, service: BookUseCase, book_data):
-        created = await service.create.execute(book_data)
+        created = await service.create.execute(data=book_data)
         data = BookUpdate(stock_quantity=-5)
 
         with pytest.raises(ValidationException):

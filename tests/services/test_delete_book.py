@@ -7,7 +7,7 @@ from app.services.book import BookUseCase
 class TestDeleteBook:
     @pytest.mark.asyncio
     async def test_eliminar_libro_exitoso(self, service: BookUseCase, book_data):
-        created = await service.create.execute(book_data)
+        created = await service.create.execute(data=book_data)
         result = await service.delete.execute(created.id)
 
         assert result is True
