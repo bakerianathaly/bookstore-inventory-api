@@ -33,18 +33,18 @@ class BookRepository:
             Book.supplier_country,
             Book.title,
         ).where(Book.id == book_id)
-        result = await self.db.exec(statement)
+        result = await self.db.execute(statement)
         return result.one_or_none()
 
     async def get_by_isbn(self, isbn: str) -> Optional[Book]:
         statement = select(Book).where(Book.isbn == isbn)
-        result = await self.db.exec(statement)
-        return result.one_or_none()
+        result = await self.db.execute(statement)
+        return result.scalars().one_or_none()
 
     async def get_by_title(self, title: str) -> Optional[Book]:
         statement = select(Book).where(Book.title == title)
-        result = await self.db.exec(statement)
-        return result.one_or_none()
+        result = await self.db.execute(statement)
+        return result.scalars().one_or_none()
 
     async def get_all_paginated(
         self, page: int = 1, limit: int = 10
@@ -52,8 +52,8 @@ class BookRepository:
         offset = (page - 1) * limit
 
         count_statement = select(func.count()).select_from(Book)
-        count_result = await self.db.exec(count_statement)
-        total_records = count_result.one_or_none()
+        count_result = await self.db.execute(count_statement)
+        total_records = count_result.scalar()
 
         # Si no hay ningun libro en BD (la paginacion es 0) regreso el estatus 204 No Content (Sin Contenido)
         if total_records == 0 or total_records is None:
@@ -71,11 +71,11 @@ class BookRepository:
                 Book.supplier_country,
                 Book.title,
             )
-            .order_by(Book.title)
+            .order_by(Book.category)
             .group_by(
-                Book.id,
-                Book.author,
                 Book.category,
+                Book.author,
+                Book.id,    
                 Book.cost_usd,
                 Book.isbn,
                 Book.selling_price_local,
@@ -86,7 +86,7 @@ class BookRepository:
             .offset(offset)
             .limit(limit)
         )
-        result = await self.db.exec(query)
+        result = await self.db.execute(query)
         books = list(result.all())
         books = [dict(x._mapping) for x in books]
 

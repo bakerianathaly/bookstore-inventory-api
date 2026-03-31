@@ -21,7 +21,7 @@ class CreateBook:
             raise BookAlreadyExistsException(f"Ya existe un libro con ISBN {data.isbn}")
 
         # Extra: Valido si ya existe un libro por ese nombre, en sagas siempre se pone el nombre + numero de libro
-        existing = await self.repository.get_by_title(data.title)
+        existing = await self.repository.get_by_title(data.title.strip().capitalize())
         if existing is not None:
             raise BookAlreadyExistsException(
                 f"Ya existe un libro con el nombre {data.title}"
@@ -36,17 +36,17 @@ class CreateBook:
             raise ValidationException("El costo en USD debe ser mayor a 0")
 
         # Validacion del inventario del libro no sea menor que 0
-        if not data.stock_quantity < 0:
+        if data.stock_quantity < 0:
             raise ValidationException("La cantidad en stock no puede ser negativa")
 
         # Creacion del objeto para crear el libro
         book = Book(
-            title=data.title,
-            author=data.author,
+            title=data.title.strip().capitalize(),
+            author=data.author.strip().capitalize(),
             isbn=data.isbn,
             cost_usd=data.cost_usd,
             stock_quantity=data.stock_quantity,
-            category=data.category,
+            category=data.category.strip().capitalize(),
             supplier_country=data.supplier_country,
         )
 

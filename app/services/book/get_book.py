@@ -13,8 +13,8 @@ class GetBook:
 
         if book is None:
             raise BookNotFoundException(f"El libro con ID {book_id} no fue encontrado")
-
-        return book
+        
+        return dict(book._mapping)
 
     async def listar(self, page: int = 1, limit: int = 10) -> PaginationInfo:
         books, total_records = await self.repository.get_all_paginated(
