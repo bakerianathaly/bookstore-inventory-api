@@ -59,7 +59,7 @@ class GetBook:
             limit=limit,
             total_pages=total_pages,
             total_records=total_records,
-            info=[self._to_dict(b) for b in books],
+            info=books,
         )
 
     @staticmethod
