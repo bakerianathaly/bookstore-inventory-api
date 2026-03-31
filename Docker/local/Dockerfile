@@ -4,16 +4,18 @@ FROM python:3.12-slim AS builder
 WORKDIR /app
 COPY --from=uv /uv /usr/local/bin/uv
 COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-dev --no-install-project
+RUN uv export --frozen --no-dev --no-hashes -o requirements.txt
 
 FROM python:3.12-slim
 WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV TZ=America/Caracas
-ENV PATH="/app/.venv/bin:$PATH"
 
-COPY --from=builder /app/.venv /app/.venv
+COPY --from=uv /uv /usr/local/bin/uv
+COPY --from=builder /app/requirements.txt /app/requirements.txt
+RUN uv pip install --system -r /app/requirements.txt
+
 COPY . .
 
 COPY Docker/local/entrypoint.sh /entrypoint.sh

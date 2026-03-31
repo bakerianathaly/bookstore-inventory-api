@@ -8,15 +8,15 @@ if [ -n "$DATABASE_URL" ]; then
     count=0
 
     until python -c "
-import sys
+import socket, sys
 try:
-    import psycopg2
-    conn = psycopg2.connect('$DATABASE_URL')
-    conn.close()
+    s = socket.create_connection(('db', 5432), timeout=3)
+    s.close()
     sys.exit(0)
-except Exception:
+except Exception as e:
+    print(f'Connection error: {e}', file=sys.stderr)
     sys.exit(1)
-" 2>/dev/null; do
+" 2>&1; do
         count=$((count + 1))
         if [ $count -ge $max_retries ]; then
             echo "Error: PostgreSQL not available after $max_retries attempts. Exiting."
