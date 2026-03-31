@@ -65,7 +65,7 @@ class BookRepository:
             .group_by(
                 Book.category,
                 Book.author,
-                Book.id,    
+                Book.id,
                 Book.cost_usd,
                 Book.isbn,
                 Book.selling_price_local,
@@ -94,13 +94,14 @@ class BookRepository:
         )
         count_result = await self.db.execute(count_statement)
         total_records = count_result.scalar_one()
-        
+
         # Si no hay ningun libro en BD (la paginacion es 0) regreso el estatus 204 No Content (Sin Contenido)
         if total_records == 0 or total_records is None:
             raise BookListEmptyException("El listado de los libros se encuentra vacio")
 
         query = (
-            select(Book.id,
+            select(
+                Book.id,
                 Book.author,
                 Book.category,
                 Book.cost_usd,
@@ -108,7 +109,7 @@ class BookRepository:
                 Book.selling_price_local,
                 Book.stock_quantity,
                 Book.supplier_country,
-                Book.title
+                Book.title,
             )
             .where(Book.category.ilike(f"%{category}%"))
             .order_by(Book.title)
@@ -133,13 +134,14 @@ class BookRepository:
         )
         count_result = await self.db.execute(count_statement)
         total_records = count_result.scalar_one()
-        
+
         # Si no hay ningun libro en BD (la paginacion es 0) regreso el estatus 204 No Content (Sin Contenido)
         if total_records == 0 or total_records is None:
             raise BookListEmptyException("El listado de los libros se encuentra vacio")
 
         query = (
-            select(Book.id,
+            select(
+                Book.id,
                 Book.author,
                 Book.category,
                 Book.cost_usd,
@@ -147,7 +149,8 @@ class BookRepository:
                 Book.selling_price_local,
                 Book.stock_quantity,
                 Book.supplier_country,
-                Book.title)
+                Book.title,
+            )
             .where(Book.stock_quantity < threshold)
             .order_by(Book.stock_quantity)
             .offset(offset)
