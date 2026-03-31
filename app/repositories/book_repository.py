@@ -22,19 +22,9 @@ class BookRepository:
             raise Exception(f"Error al crear libro: {e!s}") from e
 
     async def get_by_id(self, book_id: int) -> Optional[Book]:
-        statement = select(
-            Book.id,
-            Book.author,
-            Book.category,
-            Book.cost_usd,
-            Book.isbn,
-            Book.selling_price_local,
-            Book.stock_quantity,
-            Book.supplier_country,
-            Book.title,
-        ).where(Book.id == book_id)
+        statement = select(Book).where(Book.id == book_id)
         result = await self.db.execute(statement)
-        return result.one_or_none()
+        return result.scalars().one_or_none()
 
     async def get_by_isbn(self, isbn: str) -> Optional[Book]:
         statement = select(Book).where(Book.isbn == isbn)

@@ -115,7 +115,7 @@ async def eliminar_libro(
 ) -> APIResponse[None]:
     try:
         await service.delete.execute(book_id)
-        return APIResponse(success=True, message="Libro eliminado", outcome=[])
+        return APIResponse(success=True, message="El libro a sido eliminado exitosamente", outcome=[])
     except BookNotFoundException as e:
         response.status_code = status.HTTP_404_NOT_FOUND
         return APIResponse(success=False, message=str(e), errors=[str(e)])

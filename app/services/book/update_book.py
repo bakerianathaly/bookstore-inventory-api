@@ -49,7 +49,7 @@ class UpdateBook:
 
         # Validacion del inventario del libro no sea menor que 0
         if data.stock_quantity is not None:
-            if not data.stock_quantity < 0:
+            if data.stock_quantity < 0:
                 raise ValidationException("La cantidad en stock no puede ser negativa")
 
         update_data = data.model_dump(exclude_unset=True)
